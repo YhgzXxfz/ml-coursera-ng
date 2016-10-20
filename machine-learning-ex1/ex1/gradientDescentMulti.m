@@ -20,10 +20,9 @@ for iter = 1:num_iters
 
 
 
-
-
-
-
+    h = X * theta;
+    gama = (1 / m) * (X' * (h-y));
+    theta = theta - alpha * gama;
 
 
 
