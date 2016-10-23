@@ -67,7 +67,12 @@ x2 = [ones(m,1) a2];
 h = sigmoid(x2*Theta2');
 
 Y = full(sparse(1:m, y, 1));
-J = (1/m) * sum(sum(-Y.*log(h) - (1-Y).*log(1-h)));
+
+reg_Theta1 = Theta1; reg_Theta2 = Theta2;
+reg_Theta1(:, 1) = zeros(size(Theta1,1), 1);
+reg_Theta2(:, 1) = zeros(size(Theta2,1), 1);
+J = (1/m) * sum(sum(-Y.*log(h) - (1-Y).*log(1-h))) + ...
+    lambda/(2*m) * (sum(sum(reg_Theta1.^2)) + sum(sum(reg_Theta2.^2)));
 
 % -------------------------------------------------------------
 
