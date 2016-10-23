@@ -61,6 +61,7 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+% calculate h
 x1 = [ones(m,1) X];
 a2 = sigmoid(x1*Theta1');
 x2 = [ones(m,1) a2];
@@ -68,12 +69,31 @@ h = sigmoid(x2*Theta2');
 
 Y = full(sparse(1:m, y, 1));
 
+% regularized cost function
 reg_Theta1 = Theta1; reg_Theta2 = Theta2;
 reg_Theta1(:, 1) = zeros(size(Theta1,1), 1);
 reg_Theta2(:, 1) = zeros(size(Theta2,1), 1);
 J = (1/m) * sum(sum(-Y.*log(h) - (1-Y).*log(1-h))) + ...
     lambda/(2*m) * (sum(sum(reg_Theta1.^2)) + sum(sum(reg_Theta2.^2)));
 
+% backpropagation
+delta1 = zeros(size(Theta1));
+delta2 = zeros(size(Theta2));
+for i = 1:m
+    % one pass of feedforward
+    z1 = [1 X(i,:)]; a1 = z1;
+    z2 = [1 a1*Theta1']; a2 = [1 sigmoid(a1*Theta1')];
+    z3 = a2*Theta2'; a3 = sigmoid(z3);
+    % calculate error
+    g3 = (a3-Y(i,:))';
+    g2 = (Theta2'*g3) .* sigmoidGradient(z2)';
+    % accumulate delta
+    delta1 = delta1 + g2(2:end, :)*a1;
+    delta2 = delta2 + g3*a2;
+end
+
+Theta1_grad = 1/m * delta1;
+Theta2_grad = 1/m * delta2;
 % -------------------------------------------------------------
 
 % =========================================================================
