@@ -44,8 +44,11 @@ J = 1/2 * sum(sum(diff_matrix.^2)) ...
     + lambda/2 * sum(sum(Theta.^2))...
     + lambda/2 * sum(sum(X.^2));
 
-X_grad = diff_matrix * Theta;
-Theta_grad = diff_matrix' * X;
+X_grad = diff_matrix * Theta ...
+    + lambda * X;
+
+Theta_grad = diff_matrix' * X ...
+    + lambda * Theta;
 
 % =============================================================
 
